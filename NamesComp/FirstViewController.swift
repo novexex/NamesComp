@@ -18,21 +18,36 @@ class FirstViewController: UIViewController {
         destinationVS.firstName = yourNameTextField.text
         destinationVS.secondName = partnerNameTextField.text
     }
-    
-    @IBAction func resultButtonTapped() {
-//        guard let firstName = yourNameTextField.text, let secondName = partnerNameTextField.text else { return }
-//        if firstName.isEmpty || secondName.isEmpty {
-//            showAlert(title: "Names are missing", message: "Please enter both names")
-//            return
-//        }
-//        performSegue(withIdentifier: "goToResult", sender: nil)
-    }
-    
+
     @IBAction func unwindSegueToFirstVC(segue: UIStoryboardSegue) {
         yourNameTextField.text = ""
         partnerNameTextField.text = ""
     }
     
+    @IBAction func resultButtonTapped() {
+        guard let firstName = yourNameTextField.text, let secondName = partnerNameTextField.text else { return }
+
+        if firstName.isEmpty || secondName.isEmpty {
+            showAlert(title: "Names are missing", message: "Please enter both names")
+            return
+        }
+        if firstName.latinCharactersOnly && secondName.latinCharactersOnly {
+            performSegue(withIdentifier: "goToResult", sender: nil)
+        } else {
+            showAlert(title: "Unknown language", message: "Please use latin letters only")
+            yourNameTextField.text = ""
+            partnerNameTextField.text = ""
+            return
+        }
+        
+    }
+    
+}
+
+extension String {
+    var latinCharactersOnly: Bool {
+        return self.range(of: "\\P{Latin}", options: .regularExpression) == nil
+    }
 }
 
 extension FirstViewController {
